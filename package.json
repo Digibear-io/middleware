@@ -1,0 +1,27 @@
+{
+  "name": "@digibear/middleware",
+  "version": "0.1.0",
+  "description": "A Middleware pipeline written with Typescript.",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "rm -rf ./dist && tsc -p tsconfig.json",
+    "prepublish": "yarn run build"
+  },
+  "keywords": [
+    "Middleware",
+    "Pipeline"
+  ],
+  "author": "Lemuel Canady, Jr.",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-typescript": "^7.12.1",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^14.14.7",
+    "babel-jest": "^26.6.3",
+    "jest": "^26.6.3",
+    "typescript": "^4.0.5"
+  }
+}
