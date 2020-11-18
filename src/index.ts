@@ -11,10 +11,10 @@ export type Pipe<T> = {
 
 /**
  * Declare a new middleware pipeline.
- * @param middlewares A list of middlewares to add to the pipeline on 
+ * @param middlewares A list of middlewares to add to the pipeline on
  * instantiation.
  */
-export default function <T>(...middlewares: Middleware<T>[]): Pipe<T> {
+export function pipeline<T>(...middlewares: Middleware<T>[]): Pipe<T> {
   const stack: Middleware<T>[] = middlewares;
 
   /**

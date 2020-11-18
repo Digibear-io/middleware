@@ -1,4 +1,4 @@
-import pipeline from "../src/index";
+import { pipeline } from "../src/index";
 
 interface TestContext {
   [key: string]: any;

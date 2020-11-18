@@ -11,7 +11,7 @@ This is a middleware engine written in typescript that I've used on a couple of 
 When you call the pipline function and assign it to a variable, you are able to pass a coma seperated list of middleware functions to add to the middleware queue.
 
 ```JS
-import pipeline from "@digibear/middleware";
+import { pipeline } from "@digibear/middleware";
 
 interface Context {
     [key: string]: any
