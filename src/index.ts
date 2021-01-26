@@ -1,9 +1,11 @@
 // First we declare our types.
 export type Next = () => Promise<any> | any;
+
 export type Middleware<T> = (
   context: T,
   next: Next
 ) => Promise<void | T> | void | T;
+
 export type Pipe<T> = {
   use: (...middlewares: Middleware<T>[]) => void;
   execute: (context: T) => Promise<void | T>;
