@@ -43,7 +43,7 @@ export function pipeline<T>(...middlewares: Middleware<T>[]): Pipe<T> {
      * @param context The context object to send through the
      * middleware pipeline.
      */
-    const handler = async (index: number, context: T): Promise<void | T> => {
+    const handler = async (index: number, context: T) => {
       if (index === prevIndex) {
         throw new Error("next() already called.");
       }
@@ -58,8 +58,7 @@ export function pipeline<T>(...middlewares: Middleware<T>[]): Pipe<T> {
         await middleware(context, () => handler(index + 1, context));
       }
     };
-    const response = await handler(0, context);
-    if (response) return response;
+    return await handler(0, context);
   };
 
   return { use, execute };
