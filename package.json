@@ -1,6 +1,6 @@
 {
   "name": "@digibear/middleware",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "A Middleware pipeline written with Typescript.",
   "main": "./dist/src/index.js",
   "homepage": "https://github.com/Digibear-io/middleware/blob/main/README.md",
@@ -9,7 +9,7 @@
     "url": "https://github.com/digibear-io/middleware.git"
   },
   "files": [
-    "dist/**/*js"
+    "dist"
   ],
   "scripts": {
     "test": "jest",
