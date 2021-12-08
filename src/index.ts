@@ -1,10 +1,7 @@
 // First we declare our types.
-export type Next = () => Promise<any> | any;
 
-export type Middleware<T> = (
-  context: T,
-  next: Next
-) => Promise<void | T> | void | T;
+export type Next = () => void | Promise<void>;
+export type Middleware<T> = (context: T, next: Next) => Promise<void> | void;
 
 export type Pipe<T> = {
   use: (...middlewares: Middleware<T>[]) => void;
@@ -32,33 +29,18 @@ export function pipeline<T>(...middlewares: Middleware<T>[]): Pipe<T> {
    * Execute a pipeline, and move context through each middleware in turn.
    * @param context The contect object to be sent through the pipeline.
    */
-  const execute: Pipe<T>["execute"] = async (context) => {
-    let prevIndex = -1;
+  const execute: Pipe<T>["execute"] = async (ctx: T) => {
+    const _handle = async <T>(
+      ctx: T,
+      middleware: Middleware<T>[]
+    ): Promise<void> => {
+      if (!middleware.length) return;
 
-    /**
-     * Programatically go through each middleware and apply it to context before
-     * either moving on to the next middleware, or returning the final context
-     * object.
-     * @param index The current count of middleware executions.
-     * @param context The context object to send through the
-     * middleware pipeline.
-     */
-    const handler = async (index: number, context: T) => {
-      if (index === prevIndex) {
-        throw new Error("next() already called.");
-      }
-
-      if (index === stack.length) return context;
-
-      prevIndex = index;
-
-      const middleware = stack[index];
-
-      if (middleware) {
-        await middleware(context, () => handler(index + 1, context));
-      }
+      const slice = middleware[0];
+      return slice(ctx, async () => await _handle(ctx, middleware.slice(1)));
     };
-    return await handler(0, context);
+
+    return _handle(ctx, middlewares);
   };
 
   return { use, execute };
