@@ -26,7 +26,8 @@ const engine = pipeline<Context>((ctx, next) => {
 Not all middleware has to be added when the factory function is first invoked. Instead, you can assign middldeware to the system later with the `use` method.
 
 ```js
-engine.use((ctx, next) => {
+engine.use(async (ctx, next) => {
+  await new promise(res => setTimeout(() = res, 2000));
   ctx.another = 123;
   next();
 });
