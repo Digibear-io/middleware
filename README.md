@@ -44,6 +44,29 @@ Then when we're ready to run the middleware engine, we'll create it's it's initi
 
 // => { foobar: "baz", another: 123 }
 ```
+## Errors
+
+If an error happens in your middleware pipeline, you can assign an error handling middleware at the end of the queue. 
+
+```ts
+
+engine.use((ctx, next) => {
+  fs.readFile(ctx.path, {}, (err, file) => {
+    if(err) next(err)
+    
+    // .. Do something
+    
+    next();
+  })
+})
+
+
+// .. More middleware ...
+
+engine.use((cyx, next, error) => {
+ if (error) console.error(error.message);
+})
+```
 
 ## Development
 

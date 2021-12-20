@@ -1,7 +1,10 @@
 // First we declare our types.
 
-export type Next = () => void | Promise<void>;
-export type Middleware<T> = (context: T, next: Next) => Promise<void> | void;
+export type Middleware<T> = (
+  context: T,
+  next: (error?: Error) => Promise<Middleware<T>> | Promise<void>,
+  error?: Error
+) => Promise<void> | void;
 
 export type Pipe<T> = {
   use: (...middlewares: Middleware<T>[]) => void;
@@ -32,12 +35,26 @@ export function pipeline<T>(...middlewares: Middleware<T>[]): Pipe<T> {
   const execute: Pipe<T>["execute"] = async (ctx: T) => {
     const _handle = async <T>(
       ctx: T,
-      middleware: Middleware<T>[]
+      middleware: Middleware<T>[],
+      error?: Error
     ): Promise<void> => {
       if (!middleware.length) return;
 
-      const slice = middleware[0];
-      return slice(ctx, async () => await _handle(ctx, middleware.slice(1)));
+      let slice: Middleware<T>;
+
+      // If an error is detected, skip to the end and attempt to handle
+      // the error before it throws.
+      if (error) {
+        slice = middleware[middleware.length - 1];
+      } else {
+        slice = middleware[0];
+      }
+
+      return slice(
+        ctx,
+        async (error) => await _handle(ctx, middleware.slice(1), error),
+        error
+      );
     };
 
     return _handle(ctx, middlewares);

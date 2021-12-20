@@ -55,6 +55,33 @@ test("Context is correct when using async middleware", async () => {
 
   const context: TestContext = {};
   await engine.execute(context);
-  console.log(context);
   expect(context.another).toEqual(123);
+});
+
+test("Errors are handled by error middleware", async () => {
+  type TestContext = { [key: string]: any };
+
+  const engine = pipeline<TestContext>(async (ctx, next) => {
+    ctx.foobar = "baz";
+    await new Promise((res) => setTimeout(res, 2000)); // Mock a real-world async function
+    next();
+  });
+
+  engine.use(
+    async (ctx, next) => {
+      next(new Error("This is an error"));
+    },
+    async (ctx, next) => {
+      ctx.another = 123;
+    },
+    async (ctx, next, error) => {
+      if (error) ctx.error = error.message;
+      next();
+    }
+  );
+
+  const context: TestContext = {};
+  await engine.execute(context);
+  expect(context.error).toBe("This is an error");
+  expect(context.another).toBeUndefined();
 });
