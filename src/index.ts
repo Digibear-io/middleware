@@ -6,6 +6,8 @@ export type Middleware<T> = (
   error?: Error
 ) => Promise<void> | void;
 
+export type Next = () => {};
+
 export type Pipe<T> = {
   use: (...middlewares: Middleware<T>[]) => void;
   execute: (context: T) => Promise<void | T>;
